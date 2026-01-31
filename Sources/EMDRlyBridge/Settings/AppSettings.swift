@@ -1,41 +1,26 @@
 import Foundation
 
-/// User's app settings and preferences
 public struct AppSettings: Codable, Hashable, Sendable {
-
-    // MARK: - User Profile
     public var birthYear: Int?
-    public var clientCode: String // Anonymized identifier
-    public var displayName: String? // What they want to be called
-
-    // MARK: - Check-In Preferences
+    public var clientCode: String
+    public var displayName: String?
     public var checkInEnabled: Bool
-    public var checkInTimeAfterSession: TimeInterval // Hours after session
+    public var checkInTimeAfterSession: TimeInterval
     public var morningCheckInTime: Date?
     public var eveningCheckInTime: Date?
     public var weeklyCheckInDay: Weekday?
-
-    // MARK: - Calendar Integration
     public var calendarIntegrationEnabled: Bool
     public var calendarSearchTerms: [String]
     public var preSessionReminderHours: Int
     public var preSessionReminderEnabled: Bool
-
-    // MARK: - Notification Preferences
     public var notificationsEnabled: Bool
     public var quietHoursStart: Date?
     public var quietHoursEnd: Date?
-
-    // MARK: - Privacy & Sharing
-    public var therapistSharingPreferences: TherapistSharingPreferences
-    public var useLocalAIOnly: Bool // Keep all AI processing on device
-
-    // MARK: - Appearance
+    public var therapistSharingPreferences: TherapistConnection.SharingPreferences
+    public var useLocalAIOnly: Bool
     public var preferredColorScheme: ColorSchemePreference
     public var useLargeText: Bool
     public var reducedMotion: Bool
-
-    // MARK: - Crisis Settings
     public var crisisContactsConfigured: Bool
     public var therapistAsEmergencyContact: Bool
     public var showCrisisButtonAlways: Bool
@@ -45,7 +30,7 @@ public struct AppSettings: Codable, Hashable, Sendable {
         clientCode: String = UUID().uuidString.prefix(8).uppercased().description,
         displayName: String? = nil,
         checkInEnabled: Bool = true,
-        checkInTimeAfterSession: TimeInterval = 3 * 3600, // 3 hours
+        checkInTimeAfterSession: TimeInterval = 3 * 3600,
         morningCheckInTime: Date? = nil,
         eveningCheckInTime: Date? = nil,
         weeklyCheckInDay: Weekday? = nil,
@@ -56,7 +41,7 @@ public struct AppSettings: Codable, Hashable, Sendable {
         notificationsEnabled: Bool = true,
         quietHoursStart: Date? = nil,
         quietHoursEnd: Date? = nil,
-        therapistSharingPreferences: TherapistSharingPreferences = TherapistSharingPreferences(),
+        therapistSharingPreferences: TherapistConnection.SharingPreferences = TherapistConnection.SharingPreferences(),
         useLocalAIOnly: Bool = true,
         preferredColorScheme: ColorSchemePreference = .system,
         useLargeText: Bool = false,
@@ -131,7 +116,6 @@ public enum ColorSchemePreference: String, Codable, CaseIterable, Sendable {
     }
 }
 
-/// Onboarding state
 public struct OnboardingState: Codable, Hashable, Sendable {
     public var hasCompletedOnboarding: Bool
     public var hasAcknowledgedPrivacy: Bool
@@ -161,7 +145,6 @@ public struct OnboardingState: Codable, Hashable, Sendable {
     }
 }
 
-/// App statistics for the user
 public struct AppStatistics: Codable, Hashable, Sendable {
     public var totalSessions: Int
     public var totalMemories: Int
