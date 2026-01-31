@@ -17,7 +17,7 @@ let package = Package(
             targets: ["EMDRlyBridge"]),
     ],
     dependencies: [
-        .package(path: "../../../JMLLC/JWS/JBS"),
+        .package(url: "https://github.com/MeansAI/JBS.git", branch: "main"),
     ],
     targets: [
         .target(
