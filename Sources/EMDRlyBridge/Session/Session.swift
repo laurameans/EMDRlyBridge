@@ -102,20 +102,21 @@ public enum FeelingLevel: String, Codable, CaseIterable, Sendable {
         }
     }
 
-    public var emoji: String {
+    /// SF Symbol name for this feeling level
+    public var symbolName: String {
         switch self {
-        case .veryCalm: return "😌"
-        case .calm: return "🙂"
-        case .neutral: return "😐"
-        case .anxious: return "😰"
-        case .veryAnxious: return "😨"
-        case .sad: return "😢"
-        case .verySad: return "😭"
-        case .hopeful: return "🌟"
-        case .relieved: return "😮‍💨"
-        case .overwhelmed: return "😵"
-        case .energized: return "⚡"
-        case .numb: return "😶"
+        case .veryCalm: return "leaf.fill"
+        case .calm: return "sun.min.fill"
+        case .neutral: return "circle.fill"
+        case .anxious: return "waveform.path"
+        case .veryAnxious: return "bolt.fill"
+        case .sad: return "cloud.rain.fill"
+        case .verySad: return "cloud.heavyrain.fill"
+        case .hopeful: return "sunrise.fill"
+        case .relieved: return "wind"
+        case .overwhelmed: return "tornado"
+        case .energized: return "sparkles"
+        case .numb: return "minus.circle.fill"
         }
     }
 

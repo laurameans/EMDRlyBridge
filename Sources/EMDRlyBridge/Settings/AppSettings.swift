@@ -24,6 +24,9 @@ public struct AppSettings: Codable, Hashable, Sendable {
     public var crisisContactsConfigured: Bool
     public var therapistAsEmergencyContact: Bool
     public var showCrisisButtonAlways: Bool
+    public var safePlaceCueWord: String?
+    public var safePlaceDescription: String?
+    public var containerDescription: String?
 
     public init(
         birthYear: Int? = nil,
@@ -48,7 +51,10 @@ public struct AppSettings: Codable, Hashable, Sendable {
         reducedMotion: Bool = false,
         crisisContactsConfigured: Bool = false,
         therapistAsEmergencyContact: Bool = false,
-        showCrisisButtonAlways: Bool = true
+        showCrisisButtonAlways: Bool = true,
+        safePlaceCueWord: String? = nil,
+        safePlaceDescription: String? = nil,
+        containerDescription: String? = nil
     ) {
         self.birthYear = birthYear
         self.clientCode = clientCode
@@ -73,6 +79,9 @@ public struct AppSettings: Codable, Hashable, Sendable {
         self.crisisContactsConfigured = crisisContactsConfigured
         self.therapistAsEmergencyContact = therapistAsEmergencyContact
         self.showCrisisButtonAlways = showCrisisButtonAlways
+        self.safePlaceCueWord = safePlaceCueWord
+        self.safePlaceDescription = safePlaceDescription
+        self.containerDescription = containerDescription
     }
 
     public static var `default`: AppSettings {

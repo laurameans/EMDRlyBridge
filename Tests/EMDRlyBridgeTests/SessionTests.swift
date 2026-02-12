@@ -80,10 +80,10 @@ struct FeelingLevelTests {
         #expect(FeelingLevel.neutral.needsExtraSupport == false)
     }
 
-    @Test("FeelingLevel has emojis")
-    func hasEmojis() {
+    @Test("FeelingLevel has SF Symbols")
+    func hasSymbolNames() {
         for feeling in FeelingLevel.allCases {
-            #expect(!feeling.emoji.isEmpty)
+            #expect(!feeling.symbolName.isEmpty)
         }
     }
 }

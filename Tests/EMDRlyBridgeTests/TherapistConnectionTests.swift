@@ -583,10 +583,10 @@ struct EncouragementTypeTests {
         #expect(Encouragement.EncouragementType.proud.displayName == "Proud of you")
     }
 
-    @Test("EncouragementType has emojis")
-    func emojis() {
+    @Test("EncouragementType has SF Symbols")
+    func symbolNames() {
         for type in Encouragement.EncouragementType.allCases {
-            #expect(!type.emoji.isEmpty)
+            #expect(!type.symbolName.isEmpty)
         }
     }
 

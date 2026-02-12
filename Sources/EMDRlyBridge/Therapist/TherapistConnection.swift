@@ -295,14 +295,14 @@ public enum Encouragement {
             }
         }
 
-        public var emoji: String {
+        public var symbolName: String {
             switch self {
-            case .hug: return "🤗"
-            case .like: return "❤️"
-            case .proud: return "⭐"
-            case .thinking: return "💭"
-            case .support: return "🤝"
-            case .custom: return "💬"
+            case .hug: return "hands.clap.fill"
+            case .like: return "heart.fill"
+            case .proud: return "star.fill"
+            case .thinking: return "bubble.left.fill"
+            case .support: return "person.2.fill"
+            case .custom: return "text.bubble.fill"
             }
         }
     }
