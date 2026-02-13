@@ -1,5 +1,5 @@
 {
-  "originHash" : "c53c1d48ab0676c87927cdaa2b0943f59f5c956c6ab90fb2a892c882302cdc28",
+  "originHash" : "9f7ca6ea80b94999a65fc299bf5b59b5c1de4fac9b530f8f32843174fe41b792",
   "pins" : [
     {
       "identity" : "anylanguagemodel",
@@ -58,7 +58,7 @@
     {
       "identity" : "jbs",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MeansAI/JBS.git",
+      "location" : "https://github.com/laurameans/JBS.git",
       "state" : {
         "branch" : "main",
         "revision" : "c51441706cb6e93fa62185295a5836075650022a"

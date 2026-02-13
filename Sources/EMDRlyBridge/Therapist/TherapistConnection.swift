@@ -398,6 +398,58 @@ public enum BuzzerDevice {
         public static var `default`: Settings {
             Settings()
         }
+
+        // MARK: - Clinical Display Helpers
+
+        /// Clinical speed label as practitioners document in session notes
+        /// Slow (1-7): ~1.1-1.7s between pulses, used for Safe Place/RDI
+        /// Medium (8-13): ~0.8-1.1s between pulses
+        /// Fast (14-20): ~0.5-0.8s between pulses, used for reprocessing
+        public var speedLabel: String {
+            switch speed {
+            case 1...7: return "Slow"
+            case 8...13: return "Medium"
+            default: return "Fast"
+            }
+        }
+
+        /// Approximate seconds between pulses, derived from device speed setting
+        public var secondsBetweenPulses: Double {
+            // Maps 1-20 to approximately 1.7s - 0.5s
+            let normalized = Double(speed - 1) / 19.0
+            return 1.7 - (normalized * 1.2)
+        }
+
+        /// Clinical intensity label as practitioners document in session notes
+        public var intensityLabel: String {
+            switch tactileIntensity {
+            case 1...7: return "Low"
+            case 8...13: return "Medium"
+            default: return "High"
+            }
+        }
+
+        /// Clinical volume label as practitioners document in session notes
+        public var volumeLabel: String {
+            switch volume {
+            case 1...7: return "Low"
+            case 8...13: return "Medium"
+            default: return "High"
+            }
+        }
+
+        /// Approximate passes per set for a given set duration in seconds
+        public func passesPerSet(setDuration: Int) -> Int {
+            guard secondsBetweenPulses > 0 else { return 0 }
+            return Int(Double(setDuration) / secondsBetweenPulses)
+        }
+
+        /// Clinical summary as practitioners would write in session notes
+        /// e.g. "Tactile (Small Pulsers), Fast speed (~0.7s), Medium intensity, ~30 passes/set"
+        public func clinicalSummary(setDuration: Int = 30) -> String {
+            let passes = passesPerSet(setDuration: setDuration)
+            return "\(pulserType.displayName), \(speedLabel) speed (~\(String(format: "%.1f", secondsBetweenPulses))s), \(intensityLabel) intensity, ~\(passes) passes/\(setDuration)s set"
+        }
     }
 }
 
@@ -547,7 +599,9 @@ public enum CrisisAlert {
     }
 
     public enum Severity: String, Codable, CaseIterable, Sendable {
+        case low = "low"
         case moderate = "moderate"
+        case high = "high"
         case severe = "severe"
         case critical = "critical"
 
@@ -557,7 +611,9 @@ public enum CrisisAlert {
 
         public var color: String {
             switch self {
+            case .low: return "green"
             case .moderate: return "yellow"
+            case .high: return "orange"
             case .severe: return "orange"
             case .critical: return "red"
             }
