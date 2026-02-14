@@ -271,37 +271,155 @@ public struct GroundingExercises {
     }
 }
 
+/// Crisis severity levels for tiered response
+public enum CrisisSeverity: String, Codable, Sendable {
+    /// Active methods or planning - immediate danger
+    case immediate
+    /// Direct suicidal ideation or self-harm intent
+    case elevated
+    /// Hopelessness, passive ideation, or overwhelming distress
+    case distressed
+}
+
 /// Dangerous thought detection keywords (for crisis screening)
 public struct SafetyScreening {
 
-    /// Words that may indicate the user needs crisis support
-    /// This is NOT diagnostic - just triggers a gentle check-in
+    // MARK: - Immediate severity (methods, planning, active intent)
+
+    private static let immediatePatterns: [String] = [
+        // Methods
+        "jump off", "jump from", "jump off a bridge",
+        "slit my wrists", "cut my wrists",
+        "overdose", "take all my pills", "take all the pills",
+        "hang myself", "hanging myself",
+        "shoot myself", "shooting myself",
+        "drown myself", "drowning myself",
+        "step in front of", "throw myself",
+        "stab myself",
+        // Planning indicators
+        "writing a note", "wrote a note", "goodbye letter",
+        "giving away my things", "gave away my stuff",
+        "saying goodbye to everyone", "said my goodbyes",
+        "making arrangements", "made arrangements",
+        "before i go", "when i'm gone", "after i'm gone",
+        "i've decided to end", "decided to kill",
+        "made up my mind", "i have a plan",
+        "bought a gun", "found a way"
+    ]
+
+    // MARK: - Elevated severity (direct ideation, self-harm)
+
+    private static let elevatedPatterns: [String] = [
+        // Direct suicidal ideation
+        "want to die", "i want to die",
+        "kill myself", "killing myself",
+        "end my life", "end it all", "take my own life", "take my life",
+        "suicide", "suicidal",
+        "better off dead", "rather be dead",
+        "wish i was dead", "wish i were dead", "wish i wasn't alive",
+        "don't want to live", "don't want to be alive",
+        "not worth living", "life isn't worth",
+        // Self-harm
+        "hurt myself", "hurting myself", "harm myself", "harming myself",
+        "cutting myself", "cut myself",
+        "burn myself", "burning myself",
+        "punish myself", "punishing myself",
+        "hitting myself", "hit myself"
+    ]
+
+    // MARK: - Distressed severity (hopelessness, passive ideation, crisis state)
+
+    private static let distressedPatterns: [String] = [
+        // Passive ideation
+        "can't go on", "cannot go on",
+        "no point", "no point in living", "no point in trying",
+        "better off without me", "world would be better without",
+        "don't want to be here", "don't want to wake up",
+        "wish i wasn't here", "wish i could disappear",
+        "nobody would care if", "nobody would miss me",
+        "nobody would notice", "no one would care",
+        "wouldn't matter if i", "the world would be better",
+        // Hopelessness
+        "hopeless", "completely hopeless",
+        "no way out", "trapped forever", "never get better",
+        "nothing will change", "nothing ever changes",
+        "given up", "give up", "giving up on everything",
+        "what's the point", "there's no point",
+        "can't take it", "can't take it anymore",
+        "too much to handle", "too much to bear",
+        "can't do this anymore", "i can't anymore",
+        "no reason to live", "no reason to keep going",
+        // Crisis state
+        "panic attack", "having a panic attack",
+        "flashback", "having a flashback",
+        "dissociating", "i'm dissociating",
+        "not in my body", "can't feel my body",
+        "losing control", "losing my mind",
+        "can't breathe", "i can't breathe"
+    ]
+
+    /// All concerning patterns combined (kept for backward compatibility)
     public static var concerningPatterns: [String] {
-        [
-            "want to die",
-            "kill myself",
-            "end it",
-            "can't go on",
-            "no point",
-            "better off without me",
-            "hurt myself",
-            "don't want to be here",
-            "give up",
-            "no reason to live",
-            "too much to handle",
-            "can't take it",
-            "hopeless"
-        ]
+        immediatePatterns + elevatedPatterns + distressedPatterns
     }
 
-    /// Check if text contains concerning patterns
+    /// Check if text contains concerning patterns (backward compatible)
     public static func containsConcerningContent(_ text: String) -> Bool {
-        let lowered = text.lowercased()
-        return concerningPatterns.contains { lowered.contains($0) }
+        classifySeverity(text) != nil
     }
 
-    /// Gentle response for concerning content
+    /// Classify the severity of concerning content in text
+    /// Returns nil if no concerning content is detected
+    public static func classifySeverity(_ text: String) -> CrisisSeverity? {
+        let lowered = text.lowercased()
+
+        if immediatePatterns.contains(where: { lowered.contains($0) }) {
+            return .immediate
+        }
+        if elevatedPatterns.contains(where: { lowered.contains($0) }) {
+            return .elevated
+        }
+        if distressedPatterns.contains(where: { lowered.contains($0) }) {
+            return .distressed
+        }
+        return nil
+    }
+
+    /// Tiered crisis response based on severity
+    public static func crisisResponse(severity: CrisisSeverity) -> String {
+        switch severity {
+        case .immediate:
+            return """
+            I'm really concerned about what you're sharing, and I'm glad you told me. You don't have to go through this alone.
+
+            Please reach out now:
+            \u{2022} Call or text 988 (Suicide & Crisis Lifeline) \u{2014} free, confidential, 24/7
+            \u{2022} Text HOME to 741741 (Crisis Text Line)
+            \u{2022} Call 911 if you're in immediate danger
+
+            Would you like me to notify your therapist or emergency contact?
+            """
+        case .elevated:
+            return """
+            I hear that you're going through something really difficult right now. Your feelings are valid, and you don't have to face this alone.
+
+            If you need support right now: call or text 988 (Suicide & Crisis Lifeline) \u{2014} it's free and available 24/7.
+
+            Would it help to talk about what's happening, or would you like to try a grounding exercise?
+            """
+        case .distressed:
+            return """
+            That sounds really overwhelming. I'm here with you.
+
+            If things feel like too much, the 988 Lifeline is always available (call or text 988).
+
+            What would feel most helpful right now?
+            """
+        }
+    }
+
+    /// Gentle response for concerning content (backward compatible, uses elevated level)
     public static var gentleCrisisResponse: String {
-        "I hear that you're going through something really difficult right now. Your feelings are valid, and you don't have to face this alone. Would it help to talk about what's happening? I'm here, and so are people who can help."
+        crisisResponse(severity: .elevated)
     }
 }

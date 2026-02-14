@@ -3,7 +3,7 @@ import Foundation
 /// AI conversation engine configuration and templates
 public enum AIConversation {
 
-    /// System prompt for the on-device AI (Qwen via MLX)
+    /// Base system prompt for the on-device AI
     public static var systemPrompt: String {
         """
         You are a warm, supportive companion helping someone process their EMDR therapy journey. \
@@ -20,7 +20,7 @@ public enum AIConversation {
         Important guidelines:
         - NEVER provide EMDR techniques or therapeutic interventions
         - NEVER diagnose or interpret trauma
-        - If someone seems in crisis, gently suggest crisis resources
+        - If someone seems in crisis, gently suggest crisis resources (988 Lifeline)
         - Encourage rest after difficult sessions
         - Celebrate small wins and progress
         - Use "I hear you" and "that sounds hard" often
@@ -41,6 +41,30 @@ public enum AIConversation {
         - Clinical terms like "trauma response" or "reprocessing"
         - Anything that sounds like therapy advice
         """
+    }
+
+    /// Build a personalized system prompt with context, user data, and tool instructions
+    public static func buildSystemPrompt(
+        userName: String? = nil,
+        context: ConversationContext = .generalCheckIn,
+        toolInstructions: String? = nil
+    ) -> String {
+        var prompt = systemPrompt
+
+        // Add user personalization
+        if let name = userName, !name.isEmpty {
+            prompt += "\n\nThe person you're talking to is named \(name). Use their name naturally in conversation."
+        }
+
+        // Add conversation context
+        prompt += "\n\nCurrent context: \(context.additionalPrompt)"
+
+        // Add tool calling instructions if provided
+        if let tools = toolInstructions {
+            prompt += "\n\n\(tools)"
+        }
+
+        return prompt
     }
 
     /// Contexts that modify the system prompt

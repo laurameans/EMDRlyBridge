@@ -176,7 +176,10 @@ public struct QuickReply: Codable, Hashable, Identifiable, Sendable {
         case recordMemory
         case recordDream
         case contactTherapist
+        case contactEmergency
         case showResources
+        case call988
+        case call911
     }
 }
 
@@ -228,12 +231,33 @@ public enum QuickReplies {
     }
 
     public static var crisis: [QuickReply] {
-        [
-            QuickReply(text: "I'm safe, just overwhelmed", sentiment: .neutral),
-            QuickReply(text: "I need crisis support", sentiment: .needsSupport, action: .escalateToCrisis),
-            QuickReply(text: "Can you contact my therapist?", sentiment: .needsSupport, action: .contactTherapist),
-            QuickReply(text: "Show me calming resources", sentiment: .neutral, action: .showResources)
-        ]
+        crisisReplies(severity: .elevated)
+    }
+
+    public static func crisisReplies(severity: CrisisSeverity) -> [QuickReply] {
+        switch severity {
+        case .immediate:
+            return [
+                QuickReply(text: "Call 988 now", sentiment: .needsSupport, action: .call988),
+                QuickReply(text: "Call 911", sentiment: .needsSupport, action: .call911),
+                QuickReply(text: "Notify my therapist", sentiment: .needsSupport, action: .contactTherapist),
+                QuickReply(text: "Notify my emergency contact", sentiment: .needsSupport, action: .contactEmergency)
+            ]
+        case .elevated:
+            return [
+                QuickReply(text: "I'm safe, just overwhelmed", sentiment: .neutral),
+                QuickReply(text: "Call 988", sentiment: .needsSupport, action: .call988),
+                QuickReply(text: "Notify my therapist", sentiment: .needsSupport, action: .contactTherapist),
+                QuickReply(text: "Try a grounding exercise", sentiment: .neutral, action: .showResources)
+            ]
+        case .distressed:
+            return [
+                QuickReply(text: "I'm safe, just overwhelmed", sentiment: .neutral),
+                QuickReply(text: "Notify my therapist", sentiment: .needsSupport, action: .contactTherapist),
+                QuickReply(text: "Try a grounding exercise", sentiment: .neutral, action: .showResources),
+                QuickReply(text: "I want to talk about it", sentiment: .neutral)
+            ]
+        }
     }
 }
 
