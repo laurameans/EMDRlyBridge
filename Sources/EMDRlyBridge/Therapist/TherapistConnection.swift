@@ -7,22 +7,79 @@ public enum TherapistConnection {
     public typealias EncouragementType = Encouragement.EncouragementType
     public typealias FlaggedItemType = FlaggedItem.ItemType
 
+    public struct ContactInfo: Codable, Hashable, Sendable {
+        public var practiceName: String?
+        public var officePhone: String?
+        public var officeEmail: String?
+        public var officeAddress: String?
+
+        public init(
+            practiceName: String? = nil,
+            officePhone: String? = nil,
+            officeEmail: String? = nil,
+            officeAddress: String? = nil
+        ) {
+            self.practiceName = practiceName
+            self.officePhone = officePhone
+            self.officeEmail = officeEmail
+            self.officeAddress = officeAddress
+        }
+
+        public var hasAnyInfo: Bool {
+            practiceName != nil || officePhone != nil || officeEmail != nil || officeAddress != nil
+        }
+    }
+
+    public struct ContactProfile: Codable, Hashable, Sendable {
+        public var practiceName: String?
+        public var officePhone: String?
+        public var officeEmail: String?
+        public var officeAddress: String?
+        public var practiceNameVisible: Bool
+        public var phoneVisible: Bool
+        public var emailVisible: Bool
+        public var addressVisible: Bool
+
+        public init(
+            practiceName: String? = nil,
+            officePhone: String? = nil,
+            officeEmail: String? = nil,
+            officeAddress: String? = nil,
+            practiceNameVisible: Bool = true,
+            phoneVisible: Bool = true,
+            emailVisible: Bool = true,
+            addressVisible: Bool = true
+        ) {
+            self.practiceName = practiceName
+            self.officePhone = officePhone
+            self.officeEmail = officeEmail
+            self.officeAddress = officeAddress
+            self.practiceNameVisible = practiceNameVisible
+            self.phoneVisible = phoneVisible
+            self.emailVisible = emailVisible
+            self.addressVisible = addressVisible
+        }
+    }
+
     public struct Micro: Codable, Hashable, Identifiable, Sendable {
         public var id: UUID?
         public var displayName: String
         public var isConnected: Bool
         public var connectionCode: String?
+        public var contactInfo: ContactInfo?
 
         public init(
             id: UUID? = nil,
             displayName: String = "My Therapist",
             isConnected: Bool = false,
-            connectionCode: String? = nil
+            connectionCode: String? = nil,
+            contactInfo: ContactInfo? = nil
         ) {
             self.id = id
             self.displayName = displayName
             self.isConnected = isConnected
             self.connectionCode = connectionCode
+            self.contactInfo = contactInfo
         }
     }
 

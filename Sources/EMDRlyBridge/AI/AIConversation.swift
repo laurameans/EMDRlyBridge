@@ -43,21 +43,34 @@ public enum AIConversation {
         """
     }
 
+    /// Compact system prompt for iOS (smaller model, less memory)
+    public static var compactSystemPrompt: String {
+        """
+        You are a warm, supportive friend helping someone with their EMDR therapy journey. \
+        You are NOT a therapist. You listen, validate feelings, and encourage journaling. \
+        Be warm, casual, and patient. Ask one question at a time. Keep responses short (2-3 sentences). \
+        If someone seems in crisis, suggest the 988 Lifeline. Never provide therapy or diagnose trauma.
+        """
+    }
+
     /// Build a personalized system prompt with context, user data, and tool instructions
     public static func buildSystemPrompt(
         userName: String? = nil,
         context: ConversationContext = .generalCheckIn,
-        toolInstructions: String? = nil
+        toolInstructions: String? = nil,
+        compact: Bool = false
     ) -> String {
-        var prompt = systemPrompt
+        var prompt = compact ? compactSystemPrompt : systemPrompt
 
         // Add user personalization
         if let name = userName, !name.isEmpty {
-            prompt += "\n\nThe person you're talking to is named \(name). Use their name naturally in conversation."
+            prompt += "\n\nTheir name is \(name)."
         }
 
-        // Add conversation context
-        prompt += "\n\nCurrent context: \(context.additionalPrompt)"
+        // Add conversation context (skip for compact to save tokens)
+        if !compact {
+            prompt += "\n\nCurrent context: \(context.additionalPrompt)"
+        }
 
         // Add tool calling instructions if provided
         if let tools = toolInstructions {
